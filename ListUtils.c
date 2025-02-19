@@ -11,6 +11,8 @@
  */
 void **GetNextPointer(void *pNode, size_t offset)
 {
+    // Casting to char allows us to add the offset in bytes
+    // rather than in multiples of the size of the data structure
     return (void **)((char *)pNode + offset);
 }
 
@@ -25,33 +27,7 @@ void **GetNextPointer(void *pNode, size_t offset)
  */
 void **GetPrevPointer(void *pNode, size_t offset)
 {
+    // Casting to char allows us to add the offset in bytes
+    // rather than in multiples of the size of the data structure
     return (void **)((char *)pNode + offset + sizeof(void *));
-}
-
-/**
- * @brief Calculates the offset to the next pointer in a doubly linked list.
- *
- * This function calculates the offset to the next pointer in a doubly linked list.
- *
- * @param pNode Pointer to the current node.
- * @param offset Offset to the pNext field in the data structure.
- * @return Offset to the next pointer.
- */
-size_t CalculateNextPointerOffset(void *pNode, size_t offset)
-{
-    return (size_t)((char *)pNode + offset);
-}
-
-/**
- * @brief Calculates the offset to the previous pointer in a doubly linked list.
- *
- * This function calculates the offset to the previous pointer in a doubly linked list.
- *
- * @param pNode Pointer to the current node.
- * @param offset Offset to the pPrev field in the data structure.
- * @return Offset to the previous pointer.
- */
-size_t CalculatePrevPointerOffset(void *pNode, size_t offset)
-{
-    return (size_t)((char *)pNode + offset + sizeof(void *));
 }

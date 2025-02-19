@@ -4,8 +4,7 @@
 
 #include <stdio.h>  // For printf
 #include <stdlib.h> // For malloc, free
-#include <stddef.h> // For offsetof
-
+#include "ListUtils.h"
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
@@ -50,13 +49,13 @@ struct DoublyLinkedNode
  *
  * This structure represents a doubly linked list, containing pointers to the head
  * and tail of the list, as well as the number of nodes, and a pointer to a function
- * used to order the list.
+ * used to order nodes on insertion.
  *
- * This is a generic structure, so the OrderFunction pointer and the data pointers
- * can be cast to any type. This allows the list to use any data type that has the
- * previous pointer following the next pointer in memory. The offset field is used
- * to determine the offset to the pNext field in the data structure, we can then
- * increase the pointer to the data by the size of the void pointer to get the pNext
+ * This is a generic structure, the data pointers can be cast to any type. This allows
+ * the list to use any data type that has the previous pointer following the next
+ * pointer in memory. The offset field is used to determine the offset to the pNext
+ * field in the data structure, we can then increase the pointer to the data by the
+ * size of the void pointer to get the pNext
  *
  * ```c
  * typedef struct DoublyLinkedList
@@ -69,7 +68,7 @@ struct DoublyLinkedNode
  * } DoublyLinkedList;
  * ```
  */
-typedef struct DoublyLinkedList
+struct DoublyLinkedList
 {
     void *pHead;                 // Pointer to the head of the list
     void *pTail;                 // Pointer to the tail of the list
@@ -81,6 +80,8 @@ typedef struct DoublyLinkedList
 
 // __________________________ Function Prototypes __________________________
 
+void *Pop(DoublyLinkedList *pFromList);
+void Push(void *pNode, DoublyLinkedList *pIntoList);
 void DestroyDoublyLinkedNode(DoublyLinkedNode *pNode);
 void RemoveNode(void *pNode, DoublyLinkedList *pFromList);
 void InsertNode(void *pNode, DoublyLinkedList *pIntoList);

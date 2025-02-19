@@ -9,15 +9,6 @@ typedef struct testData
 } TestData;
 
 int orderFunction(void *pNode1, void *pNode2);
-
-TestData testNumbers[5] = {{1}, {2}, {3}, {4}, {5}};
-DoublyLinkedList testList = {0, 0, NULL, NULL, DOUBLY_LINKED_NODE_OFFSET, orderFunction};
-DoublyLinkedNode nodeBucket[5] = {{&testNumbers[0], NULL, NULL, 0},
-                                  {&testNumbers[1], NULL, NULL, 0},
-                                  {&testNumbers[2], NULL, NULL, 0},
-                                  {&testNumbers[3], NULL, NULL, 0},
-                                  {&testNumbers[4], NULL, NULL, 0}};
-
 void testInitDoublyLinkedList();
 void testInitDoublyLinkedNode();
 void testInitDynamicDoublyLinkedList();
@@ -26,6 +17,16 @@ void testCreateDoublyLinkedNode();
 void testCreateDoublyLinkedList();
 void testInsertNode();
 void testRemoveNode();
+void testPushNode();
+void testPopNode();
+
+TestData testNumbers[5] = {{1}, {2}, {3}, {4}, {5}};
+DoublyLinkedList testList = {0, 0, 0, 0, DOUBLY_LINKED_NODE_OFFSET, orderFunction};
+DoublyLinkedNode nodeBucket[5] = {{&testNumbers[0], NULL, NULL, 0},
+                                  {&testNumbers[1], NULL, NULL, 0},
+                                  {&testNumbers[2], NULL, NULL, 0},
+                                  {&testNumbers[3], NULL, NULL, 0},
+                                  {&testNumbers[4], NULL, NULL, 0}};
 
 int main()
 {
@@ -38,6 +39,8 @@ int main()
     testCreateDoublyLinkedList();
     testInsertNode();
     testRemoveNode();
+    testPushNode();
+    testPopNode();
     printf("All tests passed\n");
     return 0;
 }
@@ -175,4 +178,42 @@ void testRemoveNode()
         assert(testList.orderFunction == orderFunction);
     }
     printf("  Test 10 - Remove Node - passed\n");
+}
+
+void testPushNode()
+{
+    // insert the nodes
+    for (int i = 0; i < 5; i++)
+    {
+        Push(&nodeBucket[i], &testList);
+
+        assert(testList.count == i + 1);
+        assert(testList.pHead == &nodeBucket[i]);
+        assert(testList.pTail == &nodeBucket[0]);
+        assert(testList.orderFunction == orderFunction);
+    }
+    printf("  Test 11 - Push Node - passed\n");
+}
+
+void testPopNode()
+{
+    // remove the nodes
+    for (int i = 4; i >= 0; i--)
+    {
+        DoublyLinkedNode *node = Pop(&testList);
+
+        assert(testList.count == i);
+        if (i == 0)
+        {
+            assert(testList.pHead == NULL);
+            assert(testList.pTail == NULL);
+        }
+        else
+        {
+            assert(testList.pHead == &nodeBucket[i - 1]);
+            assert(testList.pTail == &nodeBucket[0]);
+        }
+        assert(testList.orderFunction == orderFunction);
+    }
+    printf("  Test 12 - Pop Node - passed\n");
 }

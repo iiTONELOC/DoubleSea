@@ -6,7 +6,5 @@
 
 void **GetNextPointer(void *pNode, size_t offset);
 void **GetPrevPointer(void *pNode, size_t offset);
-size_t CalculateNextPointerOffset(void *pNode, size_t offset);
-size_t CalculatePrevPointerOffset(void *pNode, size_t offset);
 
 #endif
