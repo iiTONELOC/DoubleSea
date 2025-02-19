@@ -1,3 +1,4 @@
+#include "ListUtils.h"
 #include "DoublyLinkedList.h"
 
 /**
@@ -41,9 +42,8 @@ void RemoveNode(void *pNode, DoublyLinkedList *pFromList)
         return;
 
     // Get pointers to the next and previous nodes in the list
-    // the char * cast allows us to do pointer arithmetic
-    void **pNodeNext = (void **)((char *)pNode + pFromList->offset);
-    void **pNodePrev = (void **)((char *)pNode + pFromList->offset + sizeof(void *));
+    void **pNodeNext = GetNextPointer(pNode, pFromList->offset);
+    void **pNodePrev = GetPrevPointer(pNode, pFromList->offset);
 
     // If the node is the head of the list
     if (pFromList->pHead == pNode)
@@ -51,7 +51,7 @@ void RemoveNode(void *pNode, DoublyLinkedList *pFromList)
         pFromList->pHead = *pNodeNext;
         if (pFromList->pHead) // If there's a new head, update its prev pointer
         {
-            void **pHeadPrev = (void **)((char *)pFromList->pHead + pFromList->offset + sizeof(void *));
+            void **pHeadPrev = GetPrevPointer(pFromList->pHead, pFromList->offset);
             *pHeadPrev = NULL;
         }
     }
@@ -62,7 +62,7 @@ void RemoveNode(void *pNode, DoublyLinkedList *pFromList)
         pFromList->pTail = *pNodePrev;
         if (pFromList->pTail) // If there's a new tail, update its next pointer
         {
-            void **pTailNext = (void **)((char *)pFromList->pTail + pFromList->offset);
+            void **pTailNext = GetNextPointer(pFromList->pTail, pFromList->offset);
             *pTailNext = NULL;
         }
     }
@@ -73,13 +73,13 @@ void RemoveNode(void *pNode, DoublyLinkedList *pFromList)
     // this will remove the node from the list
     if (*pNodePrev != NULL)
     {
-        void **pPrevNext = (void **)((char *)*pNodePrev + pFromList->offset);
+        void **pPrevNext = GetNextPointer(*pNodePrev, pFromList->offset);
         *pPrevNext = *pNodeNext;
     }
 
     if (*pNodeNext != NULL)
     {
-        void **pNextPrev = (void **)((char *)*pNodeNext + pFromList->offset + sizeof(void *));
+        void **pNextPrev = GetPrevPointer(*pNodeNext, pFromList->offset);
         *pNextPrev = *pNodePrev;
     }
 
@@ -112,11 +112,9 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
     if (pIntoList == NULL || pNode == NULL)
         return;
 
-    // Calculate the offsets for pNext and pPrev within pNode
-    // casting to a char * allows us to do pointer arithmetic
-    // get pointers to the next and previous pointers in the node
-    void **pNodeNext = (void **)((char *)pNode + pIntoList->offset);
-    void **pNodePrev = (void **)((char *)pNode + pIntoList->offset + sizeof(void *));
+    // Get pointers to the next and previous nodes in the list
+    void **pNodeNext = GetNextPointer(pNode, pIntoList->offset);
+    void **pNodePrev = GetPrevPointer(pNode, pIntoList->offset);
 
     // If the list is empty, set head and tail to the new node
     if (pIntoList->count == 0)
@@ -126,14 +124,16 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
         *pNodeNext = NULL;
         *pNodePrev = NULL;
     }
-    else
+    else // Otherwise, insert the node in the correct position
     {
         void *current = pIntoList->pHead;
+
+        // If there's no order function, insert at the end
         if (pIntoList->orderFunction == NULL)
         {
-            // Insert at the end
-            void **pTailNext = (void **)((char *)pIntoList->pTail + pIntoList->offset);
-            void **pTailPrev = (void **)((char *)pIntoList->pTail + pIntoList->offset + sizeof(void *));
+            // Get pointers to the next and previous nodes in the list
+            void **pTailNext = GetNextPointer(pIntoList->pTail, pIntoList->offset);
+            void **pTailPrev = GetPrevPointer(pIntoList->pTail, pIntoList->offset);
 
             // set the next pointer of the current tail to the new node
             *pTailNext = pNode;
@@ -144,10 +144,11 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
             // set the next pointer of the new node to NULL
             *pNodeNext = NULL;
         }
+        // If the order function is provided and the new node should be inserted at the head
         else if (pIntoList->orderFunction(pNode, pIntoList->pHead) < 0)
         {
-            // Insert at the head
-            void **pHeadPrev = (void **)((char *)pIntoList->pHead + pIntoList->offset + sizeof(void *));
+            // Get the previous pointer of the current head
+            void **pHeadPrev = GetPrevPointer(pIntoList->pHead, pIntoList->offset);
 
             // set the next pointer of the new node to the current head
             *pNodeNext = pIntoList->pHead;
@@ -158,10 +159,11 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
             // set the previous pointer of the new node to NULL
             *pNodePrev = NULL;
         }
+        // If the order function is provided and the new node should be inserted at the tail
         else if (pIntoList->orderFunction(pNode, pIntoList->pTail) > 0)
         {
-            // Insert at the tail
-            void **pTailNext = (void **)((char *)pIntoList->pTail + pIntoList->offset);
+            // Get the next pointer of the current tail
+            void **pTailNext = GetNextPointer(pIntoList->pTail, pIntoList->offset);
 
             // set the next pointer of the current tail to the new node
             *pTailNext = pNode;
@@ -180,14 +182,16 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
             {
                 if (pIntoList->orderFunction(pNode, current) < 0)
                     break;
-                current = *(void **)((char *)current + pIntoList->offset);
+
+                current = *GetNextPointer(current, pIntoList->offset);
             }
 
             // Should not happen, we insert at the tail above, but a safety check
             if (current == NULL)
             {
-                void **pPrevNext = (void **)((char *)pIntoList->pTail + pIntoList->offset);
-                void **pTailPrev = (void **)((char *)pIntoList->pTail + pIntoList->offset + sizeof(void *));
+                // Get pointers to the next and previous nodes in the list
+                void **pPrevNext = GetNextPointer(pIntoList->pTail, pIntoList->offset);
+                void **pTailPrev = GetPrevPointer(pIntoList->pTail, pIntoList->offset);
 
                 // set the previous pointer of the new node to the current tail
                 *pNodePrev = pIntoList->pTail;
@@ -200,9 +204,12 @@ void InsertNode(void *pNode, DoublyLinkedList *pIntoList)
             }
             else
             {
-                void *prev = *(void **)((char *)current + pIntoList->offset + sizeof(void *));
-                void **pPrevNext = (void **)((char *)prev + pIntoList->offset);
-                void **pCurrentPrev = (void **)((char *)current + pIntoList->offset + sizeof(void *));
+                // Get the previous node
+                void *prev = *GetPrevPointer(current, pIntoList->offset);
+                // Get the next pointer of the previous node
+                void **pPrevNext = GetNextPointer(prev, pIntoList->offset);
+                // Get the previous pointer of the current node
+                void **pCurrentPrev = GetPrevPointer(current, pIntoList->offset);
 
                 // set the next pointer of the new node to the current node
                 *pNodeNext = current;

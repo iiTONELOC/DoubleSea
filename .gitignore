@@ -62,8 +62,8 @@ dkms.conf
 .LSOverride
 
 # build
-/x64/
-/Debug/
+x64/
+Debug/
 *.log
 .ilk
 .tlog
