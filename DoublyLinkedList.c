@@ -370,6 +370,51 @@ void DestroyDoublyLinkedList(DoublyLinkedList *pList, int cleanNodes)
 }
 
 /**
+ * @brief Finds a node in a doubly linked list.
+ *
+ * This function finds a node in a doubly linked list by its data pointer.
+ *
+ * @param pList Pointer to the DoublyLinkedList structure.
+ * @param pWithData Pointer to the data to find.
+ * @return Pointer to the data in the node if found, NULL otherwise.
+ */
+void **FindDoublyLinkedNode(DoublyLinkedList *pList, void *pWithData)
+{
+    if (pList == NULL || pWithData == NULL)
+    {
+        return NULL;
+    }
+
+    // get the head of the list
+    void *pNode = pList->pHead;
+
+    // get the pointer to the data in the node
+    void **pNodeData = GetDataPointer(pNode, pList->offset);
+
+    // check if the data in the head node is the same as the data we are looking for
+    if (pNodeData != NULL && *pNodeData == pWithData)
+    {
+        return pNodeData;
+    }
+
+    // traverse the list looking for the data
+    while (pNode != NULL)
+    {
+        // get the next node
+        pNode = GetNextPointer(pNode, pList->offset);
+        // get the pointer to the data in the node
+        pNodeData = GetDataPointer(pNode, pList->offset);
+        // check if the data in the node is the same as the data we are looking for
+        if (pNodeData != NULL && *pNodeData == pWithData)
+        {
+            return pNodeData;
+        }
+    }
+
+    return NULL;
+}
+
+/**
  * @brief Initializes a doubly linked node.
  *
  * This function initializes a doubly linked node.
@@ -415,6 +460,52 @@ DynamicDoublyLinkedList *CreateDoublyLinkedList(size_t offset, OrderFunction pOr
 
     InitializeDoublyLinkedList(1, offset, pList, pOrderFunction);
     return pList;
+}
+
+/**
+ * @brief Finds a node in a doubly linked list using a comparison function.
+ *
+ * This function finds a node in a doubly linked list by comparing the data in the node
+ *
+ * @param pList Pointer to the DoublyLinkedList structure.
+ * @param pWithData Pointer to the data to find.
+ * @param pCompareFunction Pointer to the comparison function.
+ */
+void **FindDoublyLinkedNodeWCompare(DoublyLinkedList *pList, void *pWithData, CompareFunction pCompareFunction)
+{
+
+    if (pList == NULL || pWithData == NULL)
+    {
+        return NULL;
+    }
+
+    // get the head of the list
+    void *pNode = pList->pHead;
+
+    // get the pointer to the data in the node
+    void **pNodeData = GetDataPointer(pNode, pList->offset);
+
+    // check if the data in the head node is the same as the data we are looking for
+    if (pNodeData != NULL && (pCompareFunction(pNodeData, pWithData, pList->offset) == 0))
+    {
+        return &pWithData;
+    }
+
+    // traverse the list looking for the data
+    while (pNode != NULL)
+    {
+        // get the next node
+        pNode = GetNextPointer(pNode, pList->offset);
+        // get the pointer to the data in the node
+        pNodeData = GetDataPointer(pNode, pList->offset);
+        // check if the data in the node is the same as the data we are looking for
+        if (pNodeData != NULL && (pCompareFunction(pNodeData, pWithData, pList->offset) == 0))
+        {
+            return &pWithData;
+        }
+    }
+
+    return NULL;
 }
 
 /**

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include < assert.h>
+#include <assert.h>
 #include "DoublyLinkedList.h"
 
 typedef struct testData
@@ -9,6 +9,7 @@ typedef struct testData
 } TestData;
 
 int orderFunction(void *pNode1, void *pNode2);
+int compareFunction(void *pNode1, void *pNode2, size_t offset);
 void testInitDoublyLinkedList();
 void testInitDoublyLinkedNode();
 void testInitDynamicDoublyLinkedList();
@@ -19,6 +20,22 @@ void testInsertNode();
 void testRemoveNode();
 void testPushNode();
 void testPopNode();
+void testFindNode();
+void testFindNodeWCompare();
+
+void (*testFunctions[])() = {
+    testInitDoublyLinkedList,
+    testInitDoublyLinkedNode,
+    testInitDynamicDoublyLinkedList,
+    testInitDynamicDoublyLinkedNode,
+    testCreateDoublyLinkedList,
+    testCreateDoublyLinkedNode,
+    testInsertNode,
+    testRemoveNode,
+    testPushNode,
+    testPopNode,
+    testFindNode,
+    testFindNodeWCompare};
 
 TestData testNumbers[5] = {{1}, {2}, {3}, {4}, {5}};
 DoublyLinkedList testList = {0, 0, 0, 0, DOUBLY_LINKED_NODE_OFFSET, orderFunction};
@@ -31,18 +48,39 @@ DoublyLinkedNode nodeBucket[5] = {{&testNumbers[0], NULL, NULL, 0},
 int main()
 {
     printf("Running tests for DoublyLinkedList.c\n");
-    testInitDoublyLinkedList();
-    testInitDoublyLinkedNode();
-    testInitDynamicDoublyLinkedList();
-    testInitDynamicDoublyLinkedNode();
-    testCreateDoublyLinkedNode();
-    testCreateDoublyLinkedList();
-    testInsertNode();
-    testRemoveNode();
-    testPushNode();
-    testPopNode();
+    for (int i = 0; i < sizeof(testFunctions) / sizeof(testFunctions[0]); i++)
+    {
+        testFunctions[i]();
+    }
     printf("All tests passed\n");
     return 0;
+}
+
+/**
+ * @brief Compare function for the test data.
+ *
+ * @param pNode1 The first node to compare.
+ * @param pNode2 The second node to compare.
+ * @param offset The offset to the data in the node.
+ *
+ * @return The difference between the two numbers.
+ */
+int compareFunction(void *pNode1, void *pNode2, size_t offset)
+{
+    if (pNode1 == NULL || pNode2 == NULL)
+    {
+        return 0;
+    }
+
+    TestData *data1 = (TestData *)GetDataPointer(pNode1, offset);
+    TestData *data2 = (TestData *)GetDataPointer(pNode2, offset);
+
+    if (data1 == NULL || data2 == NULL)
+    {
+        return 0;
+    }
+
+    return data1->number - data2->number;
 }
 
 /**
@@ -216,4 +254,33 @@ void testPopNode()
         assert(testList.orderFunction == orderFunction);
     }
     printf("  Test 12 - Pop Node - passed\n");
+}
+
+void testFindNode()
+{
+    // insert the nodes
+    for (int i = 0; i < 5; i++)
+    {
+        InsertNode(&nodeBucket[i], &testList);
+    }
+
+    // find the nodes
+    for (int i = 0; i < 5; i++)
+    {
+        DoublyLinkedNode *node = *FindDoublyLinkedNode(&testList, &nodeBucket[i]);
+        assert(node == &nodeBucket[i]);
+    }
+    printf("  Test 13 - Find Node - passed\n");
+}
+
+void testFindNodeWCompare()
+{
+    // find the nodes
+    for (int i = 0; i < 5; i++)
+    {
+        DoublyLinkedNode *node = *FindDoublyLinkedNodeWCompare(&testList, &nodeBucket[i], compareFunction);
+        assert(node == &nodeBucket[i]);
+    }
+
+    printf("  Test 14 - Find Node With Compare - passed\n");
 }

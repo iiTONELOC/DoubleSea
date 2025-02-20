@@ -31,3 +31,18 @@ void **GetPrevPointer(void *pNode, size_t offset)
     // rather than in multiples of the size of the data structure
     return (void **)((char *)pNode + offset + sizeof(void *));
 }
+
+/**
+ * @brief Gets the pointer to the data in a doubly linked list node.
+ *
+ * This function gets the pointer to the data in a doubly linked list node.
+ *
+ * @param pNode Pointer to the current node.
+ * @param offset Offset to the pNext field in the data structure.
+ * @return Pointer to the data.
+ */
+void **GetDataPointer(void *pNode, size_t offset)
+{
+    // the data pointer comes before the pNext pointer
+    return (void **)((char *)pNode + offset - sizeof(void *));
+}

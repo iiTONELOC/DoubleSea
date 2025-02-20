@@ -14,6 +14,7 @@ typedef struct DoublyLinkedNode DoublyLinkedNode;
 typedef DoublyLinkedList DynamicDoublyLinkedList;
 typedef DoublyLinkedNode DynamicDoublyLinkedNode;
 typedef int (*OrderFunction)(void *pNode1, void *pNode2);
+typedef int (*CompareFunction)(void *pNode1, void *pNode2, size_t offset);
 #define DOUBLY_LINKED_NODE_OFFSET offsetof(DoublyLinkedNode, pNext)
 // __________________________ Structures __________________________
 /**
@@ -37,7 +38,7 @@ typedef int (*OrderFunction)(void *pNode1, void *pNode2);
  */
 struct DoublyLinkedNode
 {
-    void *pData;
+    void *pData; // should always come before the pNext field in memory
     void *pNext;
     void *pPrev; // should always follow pNext in memory
     int dynamic;
@@ -87,7 +88,9 @@ void RemoveNode(void *pNode, DoublyLinkedList *pFromList);
 void InsertNode(void *pNode, DoublyLinkedList *pIntoList);
 DynamicDoublyLinkedNode *CreateDoublyLinkedNode(void *pData);
 void DestroyDoublyLinkedList(DoublyLinkedList *pList, int cleanNodes);
+void **FindDoublyLinkedNode(DoublyLinkedList *pList, void *pWithData);
 void InitializeDoublyLinkedNode(int isDynamic, DoublyLinkedNode *pNode, void *pWithData);
 DynamicDoublyLinkedList *CreateDoublyLinkedList(size_t offset, OrderFunction pOrderFunction);
+void **FindDoublyLinkedNodeWCompare(DoublyLinkedList *pList, void *pWithData, CompareFunction pCompareFunction);
 void InitializeDoublyLinkedList(int isDynamic, size_t offset, DoublyLinkedList *pList, OrderFunction pOrderFunction);
 #endif
