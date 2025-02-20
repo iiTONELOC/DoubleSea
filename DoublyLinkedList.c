@@ -501,7 +501,7 @@ void **FindDoublyLinkedNodeWCompare(DoublyLinkedList *pList, void *pWithData, Co
         // check if the data in the node is the same as the data we are looking for
         if (pNodeData != NULL && (pCompareFunction(pNodeData, pWithData, pList->offset) == 0))
         {
-            return &pNode;
+            return GetNextPointer(pNode, pList->offset);;
         }
     }
 
