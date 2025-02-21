@@ -21,7 +21,6 @@ void testRemoveNode();
 void testPushNode();
 void testPopNode();
 void testFindNode();
-void testFindNodeWCompare();
 
 void (*testFunctions[])() = {
     testInitDoublyLinkedList,
@@ -34,8 +33,7 @@ void (*testFunctions[])() = {
     testRemoveNode,
     testPushNode,
     testPopNode,
-    testFindNode,
-    testFindNodeWCompare};
+    testFindNode};
 
 TestData testNumbers[5] = {{1}, {2}, {3}, {4}, {5}};
 DoublyLinkedList testList = {0, 0, 0, 0, DOUBLY_LINKED_NODE_OFFSET, orderFunction};
@@ -271,16 +269,4 @@ void testFindNode()
         assert(node == &nodeBucket[i]);
     }
     printf("  Test 13 - Find Node - passed\n");
-}
-
-void testFindNodeWCompare()
-{
-    // find the nodes
-    for (int i = 0; i < 5; i++)
-    {
-        DoublyLinkedNode *node = *FindDoublyLinkedNodeWCompare(&testList, &nodeBucket[i], compareFunction);
-        assert(node == &nodeBucket[i]);
-    }
-
-    printf("  Test 14 - Find Node With Compare - passed\n");
 }
