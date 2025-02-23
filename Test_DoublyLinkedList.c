@@ -265,7 +265,7 @@ void testFindNode()
     // find the nodes
     for (int i = 0; i < 5; i++)
     {
-        DoublyLinkedNode *node = *FindDoublyLinkedNode(&testList, &nodeBucket[i]);
+        DoublyLinkedNode *node = (DoublyLinkedNode *)*FindDoublyLinkedNode(&testList, &testNumbers[i]);
         assert(node == &nodeBucket[i]);
     }
     printf("  Test 13 - Find Node - passed\n");

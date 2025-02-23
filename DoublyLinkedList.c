@@ -386,37 +386,37 @@ void **FindDoublyLinkedNode(DoublyLinkedList *pList, void *pWithData)
     }
 
     // get the head of the list
-    void *pNode = pList->pHead;
+    void **pNode = &pList->pHead;
 
     // get the pointer to the data in the node
-    void **pNodeData = GetDataPointer(pNode, pList->offset);
+    void **pNodeData = GetDataPointer(*pNode, pList->offset);
 
     // check if the data in the head node is the same as the data we are looking for
     if (pNodeData != NULL && *pNodeData == pWithData)
     {
-        return pNodeData;
+        return &pList->pHead;
     }
 
     // check if the data in the tail node is the same as the data we are looking for
-    pNode = pList->pTail;
-    pNodeData = GetDataPointer(pNode, pList->offset);
+    pNode = &pList->pTail;
+    pNodeData = GetDataPointer(*pNode, pList->offset);
     if (pNodeData != NULL && *pNodeData == pWithData)
     {
-        return pNodeData;
+        return &pList->pTail;
     }
 
     // traverse the list looking for the data
-    pNode = pList->pHead;
+    pNode = &pList->pHead;
     while (pNode != NULL)
     {
         // get the next node
-        pNode = GetNextPointer(pNode, pList->offset);
+        pNode = GetNextPointer(*pNode, pList->offset);
         // get the pointer to the data in the node
-        pNodeData = GetDataPointer(pNode, pList->offset);
+        pNodeData = GetDataPointer(*pNode, pList->offset);
         // check if the data in the node is the same as the data we are looking for
         if (pNodeData != NULL && *pNodeData == pWithData)
         {
-            return pNodeData;
+            return pNode;
         }
     }
 
