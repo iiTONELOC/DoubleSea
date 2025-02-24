@@ -498,3 +498,34 @@ void InitializeDoublyLinkedList(int isDynamic, size_t offset, DoublyLinkedList *
     pList->orderFunction = pOrderFunction;
     pList->offset = offset == -1 ? DOUBLY_LINKED_NODE_OFFSET : offset;
 }
+
+/**
+ * @brief Initialize a Linked List
+ *
+ * This function initializes a linked list with the given offset, count, list, and data
+ *
+ * @param offset The offset of the linked list
+ * @param count The count of the linked list
+ * @param data The data to initialize the linked list with
+ * @param structSize The size of the structure
+ * @param indexOffset The index offset
+ * @param pList The linked list to initialize
+ * @param orderFunction The order function to use
+ */
+void InitStaticLinkedList(size_t offset, size_t count, void *data, size_t structSize,
+                          size_t indexOffset, DoublyLinkedList *pList, OrderFunction orderFunction)
+{
+    /* Init the Linked List Structure */
+    InitializeDoublyLinkedList(0, offset, pList, orderFunction);
+
+    /* Add the Desired Data to the List */
+    for (size_t i = 0; i < count; i++)
+    {
+        // set the table index using the index offset
+        *(size_t *)((char *)data + (i * structSize) + indexOffset) = i;
+        // get the address of the data
+        void *pData = (char *)data + (i * structSize);
+        // add the data to the list
+        InsertNode(pData, pList);
+    }
+}

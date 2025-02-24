@@ -91,4 +91,6 @@ void **FindDoublyLinkedNode(DoublyLinkedList *pList, void *pWithData);
 void InitializeDoublyLinkedNode(int isDynamic, DoublyLinkedNode *pNode, void *pWithData);
 DynamicDoublyLinkedList *CreateDoublyLinkedList(size_t offset, OrderFunction pOrderFunction);
 void InitializeDoublyLinkedList(int isDynamic, size_t offset, DoublyLinkedList *pList, OrderFunction pOrderFunction);
+void InitStaticLinkedList(size_t offset, size_t count, void *data, size_t structSize, size_t indexOffset, DoublyLinkedList *pList, OrderFunction orderFunction);
+
 #endif
