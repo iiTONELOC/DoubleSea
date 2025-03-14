@@ -160,7 +160,7 @@ DOUBLE_SEA_LIB_API void DSL_Push(void *pNode, DSL_List *pIntoList);
  *
  * @param pArgs - A pointer to the arguments that will be used to initialize the list
  */
-DOUBLE_SEA_LIB_API void DSL_InitStaticStorageList(DSL_InitStaticStorageListArgs *pArgs);
+DOUBLE_SEA_LIB_API void DSL_InitStaticStorageListWData(DSL_InitStaticStorageListArgs *pArgs);
 
 /**
  * @brief DSL_RemoveNode removes a node from a list
