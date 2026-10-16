@@ -1,16 +1,19 @@
 #pragma once
 
+#if defined(_WIN32)
 #ifdef DOUBLESEALIB_EXPORTS
 #define DOUBLE_SEA_LIB_API __declspec(dllexport)
 #else
 #define DOUBLE_SEA_LIB_API __declspec(dllimport)
-#endif // DOUBLESEALIB_EXPORTS
+#endif
+#else
+#define DOUBLE_SEA_LIB_API
+#endif
 
 #ifndef DOUBLE_SEA_LIST_H
 #define DOUBLE_SEA_LIST_H
 #include <stddef.h>
 
-// __________________________ Typedefs and Structures __________________________
 /**
  * @brief OrderFunction is a function pointer type that is used to compare two nodes.
  *
@@ -84,44 +87,35 @@ typedef struct DSL_InitStaticStorageListArgs
 typedef DSL_List DSL_DynamicList; // Alias for the dynamic list
 typedef DSL_Node DSL_DynamicNode; // Alias for the dynamic node
 
-// __________________________ Macros __________________________
-
-#define OFFSETOF_DSL_NODE offsetof(DSL_Node, pNext) // Offset to the pNext field in the DSL_Node structure
-
-// __________________________ Function Prototypes __________________________
+#define OFFSETOF_DSL_NODE offsetof(DSL_Node, pNext)
+#define DSL_DEFAULT_OFFSET ((size_t)-1)
 
 /**
  * @brief Gets the pointer to the next node in a doubly linked list.
- *
- * This function gets the pointer to the next node in a doubly linked list.
  *
  * @param pNode Pointer to the current node.
  * @param offset Offset to the pNext field in the data structure.
  * @return Pointer to the next node.
  */
-DOUBLE_SEA_LIB_API void **_GetNextPointer(void *pNode, size_t offset);
+DOUBLE_SEA_LIB_API void **DSL_GetNextPointer(void *pNode, size_t offset);
 
 /**
  * @brief Gets the pointer to the previous node in a doubly linked list.
- *
- * This function gets the pointer to the previous node in a doubly linked list.
  *
  * @param pNode Pointer to the current node.
  * @param offset Offset to the pPrev field in the data structure.
  * @return Pointer to the previous node.
  */
-DOUBLE_SEA_LIB_API void **_GetPrevPointer(void *pNode, size_t offset);
+DOUBLE_SEA_LIB_API void **DSL_GetPrevPointer(void *pNode, size_t offset);
 
 /**
  * @brief Gets the pointer to the data in a doubly linked list node.
- *
- * This function gets the pointer to the data in a doubly linked list node.
  *
  * @param pNode Pointer to the current node.
  * @param offset Offset to the pNext field in the data structure.
  * @return Pointer to the data.
  */
-DOUBLE_SEA_LIB_API void **_GetDataPointer(void *pNode, size_t offset);
+DOUBLE_SEA_LIB_API void **DSL_GetDataPointer(void *pNode, size_t offset);
 
 /**
  * @brief DSL_Pop removes the first node from the list and returns it
@@ -131,10 +125,9 @@ DOUBLE_SEA_LIB_API void **_GetDataPointer(void *pNode, size_t offset);
 DOUBLE_SEA_LIB_API void *DSL_Pop(DSL_List *pFromList);
 
 /**
- * @brief DSL_DestroyNode frees the memory of a node
+ * @brief DSL_DestroyNode resets a node
  *
- * Destroys a linked list node and frees the memory that it occupies if it is dynamic.
- * Otherwise, the node is reset to default values but it's memory is not freed.
+ * Resets a node to default values. The caller owns the node's memory.
  *
  * @param pNode - A pointer to the node that will be destroyed
  */
@@ -185,9 +178,8 @@ DOUBLE_SEA_LIB_API void DSL_InsertNode(void *pNode, DSL_List *pIntoList);
 /**
  * @brief DSL_DestroyList destroys a list
  *
- * Destroys a list and frees the memory the struct occupies if it is dynamic.
- * Otherwise, the list is reset to default values but it's memory is not freed.
- * Destroying a list, will also destroy all of it's nodes if the cleanNodes flag is set.
+ * Resets a list to default values. The caller owns the list's memory.
+ * Destroying a list will also destroy all of its nodes if the cleanNodes flag is set.
  *
  * @param pList - A pointer to the list that will be destroyed
  * @param cleanNodes - A flag that indicates if the nodes of the list will be destroyed
@@ -222,7 +214,7 @@ DOUBLE_SEA_LIB_API void DSL_InitNode(int isDynamic, DSL_Node *pNode, void *pWith
  * Initializes a list with the given offset and order function.
  *
  * @param isDynamic - A flag that indicates if the list is dynamic
- * @param offset - The offset to the pNext pointers in the nodes
+ * @param offset - The offset to the pNext pointers in the nodes, or DSL_DEFAULT_OFFSET for DSL_Node
  * @param pList - A pointer to the list that will be initialized
  * @param pOrderFunction - A function pointer to the function that compares two nodes
  */

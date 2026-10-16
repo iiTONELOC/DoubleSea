@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DoubleSeaLib", "DoubleSeaLib.vcxproj", "{F7A64819-EB75-4D93-A5F1-1E91968A449C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SeaTrials", "SeaTrials\SeaTrials.vcxproj", "{2E641BE8-11BC-4C8E-A852-A00BCA7927AD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SeaTrials", "..\tests\SeaTrials.vcxproj", "{2E641BE8-11BC-4C8E-A852-A00BCA7927AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -68,3 +68,5 @@ Debug/
 .ilk
 .tlog
 .recipe
+.dis
+build/

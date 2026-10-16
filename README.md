@@ -15,7 +15,7 @@
     | pHead         |      (void *)     |
     | pTail         |      (void *)     |
     | dynamic       |        int        |
-    | count         |       size_t      |
+    | length        |       size_t      |
     | offset        |       size_t      |
     | orderFunction |    Function Ptr   |
     +-----------------------------------+
@@ -23,10 +23,30 @@
 
 ## Overview
 
-This file contains the implementation for a generic doubly linked list in C.  
+A generic intrusive doubly linked list in C. It depends on `stddef.h` only, so it builds freestanding for kernel and embedded targets.
 
-The implementation supports basic linked list operations such as initialization, insertion, and removal.
+The list supports insert, remove, push, pop, find, and destroy. When an order function is set, insert keeps the list sorted. Push appends at the tail and pop removes the head.
 
-The linked list is designed to store data in nodes, with the ability to insert and remove nodes in a sorted order based on a user-defined comparison function. The List supports the `DSL_Node` struct, but also will accept any structure provided the pPrev pointer comes after the pNext pointer.
+The list accepts `DSL_Node` or any structure that lays out `pData`, `pNext`, and `pPrev` as three consecutive pointers in that order. Pass the byte offset of `pNext` to `DSL_InitList`, or `DSL_DEFAULT_OFFSET` for `DSL_Node`. `DSL_GetNextPointer`, `DSL_GetPrevPointer`, and `DSL_GetDataPointer` read those fields through the offset.
 
-Support is also provided for dynamic lists and nodes via the dynamic flag. When this is set and destroy operations are called, only nodes that have been marked as dynamic will be freed. All other nodes will be reset to default values.
+The library never allocates or frees. Destroy unlinks nodes and resets them to default values. The `dynamic` flag is a marker the caller can read to decide what to free.
+
+## Layout
+
+    include/   DoubleSeaLib.h, the public header
+    src/       DoubleSeaLib.c
+    src/win/   dllmain.c and the precompiled header, Windows only
+    tests/     SeaTrials.c and its Visual Studio project
+    msvc/      Visual Studio solution and library project
+    Makefile   Linux and macOS build
+
+## Build
+
+Linux and macOS:
+
+    make         builds build/libDoubleSeaLib.a and build/libDoubleSeaLib.so
+    make test    builds and runs SeaTrials
+    make install PREFIX=/usr/local
+    make clean
+
+Windows: open `msvc/DoubleSeaLib.sln` and build. The solution contains the library and the SeaTrials test.

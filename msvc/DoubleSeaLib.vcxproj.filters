@@ -15,24 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="..\src\win\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="..\src\win\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoubleSeaLib.h">
+    <ClInclude Include="..\include\DoubleSeaLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.c">
+    <ClCompile Include="..\src\win\dllmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pch.c">
+    <ClCompile Include="..\src\win\pch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoubleSeaLib.c">
+    <ClCompile Include="..\src\DoubleSeaLib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
